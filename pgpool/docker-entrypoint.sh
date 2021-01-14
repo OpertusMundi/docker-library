@@ -10,7 +10,12 @@ fi
 
 # Generate credentials for management interface (pcp.conf)
 
-echo "${PGPOOL_ADMIN_USER}:"$(pg_md5 "$(cat $PGPOOL_ADMIN_PASSWORD_FILE)") >>/var/lib/pgpool/pcp.conf
+pgpool_admin_password=$(cat ${PGPOOL_ADMIN_PASSWORD_FILE})
+
+echo "${PGPOOL_ADMIN_USER}:"$(pg_md5 "${pgpool_admin_password}") >> /var/lib/pgpool/pcp.conf
+
+echo "*:*:${PGPOOL_ADMIN_USER}:${pgpool_admin_password}" > ~/.pcppass
+chmod u=rw,g=,o= ~/.pcppass
 
 #
 # Generate pool_passwd from directory of user credentials
