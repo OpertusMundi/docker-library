@@ -1,0 +1,39 @@
+---
+kind: pipeline
+type: docker
+name: default
+
+trigger:
+  branch:
+  - pgpool
+
+steps:
+- name: prepare-tags
+  image: busybox:1.32
+  when:
+    event:
+    - push
+  environment:
+    # version of the packaged application (PgPool)
+    APP_VERSION: '4.1'
+    # base image used to package the application
+    APP_BASE_IMAGE: 'alpine'
+  commands:
+  - echo -n "1-$${APP_VERSION},1-$${APP_VERSION}-$${APP_BASE_IMAGE}" > .tags
+
+- name: build-and-publish
+  image: plugins/docker
+  when:
+    event:
+    - push
+  settings:
+    debug: true 
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+    context: pgpool
+    dockerfile: pgpool/Dockerfile
+    repo: opertusmundi/pgpool
+    mirror: http://registry-mirror:5000
+
