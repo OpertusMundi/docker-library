@@ -1,5 +1,35 @@
-#!/bin/sh
+#!/bin/bash
 set -e
+
+function _gen_configuration_for_backend() 
+{    
+    i=0;
+    while true; do
+        
+        host_var_name="BACKEND_${i}_HOST"
+        host=${!host_var_name}
+        test -n "${host}" || break;
+        echo "backend_hostname${i} = ${host}"
+        
+        port_var_name="BACKEND_${i}_PORT"
+        port=${!port_var_name}
+        echo "backend_port${i} = ${port:-5432}"
+        
+        weight_var_name="BACKEND_${i}_WEIGHT"
+        weight=${!weight_var_name}
+        echo "backend_weight${i} = ${weight:-1}"
+
+        name_var_name="BACKEND_${i}_NAME"
+        name=${!name_var_name}
+        test -n "${name}" || name="server$((i+1))"
+        echo "backend_application_name${i} = ${name}"
+
+        echo "backend_flag${i} = 'ALLOW_TO_FAILOVER'"
+    
+        # Move to next
+        i=$((i+1))
+    done
+}
 
 # Check environment
 
@@ -38,13 +68,8 @@ fi
 touch /etc/pgpool/pgpool.conf
 chmod g=r,o= /etc/pgpool/pgpool.conf && chown root:postgres /etc/pgpool/pgpool.conf
 
-if [ -z "${BACKEND}" ]; then
-    echo "No configuration for backend!" 1>&2
-    exit 1
-fi
-
-backend_configuration_escaped=$(echo ${BACKEND} | tr ';' '\n' | awk -F ',' -f /generate-configuration-for-backend.awk | \
-    sed ':a;N;$!ba;s/\n/\\n/g')
+backend_configuration_escaped=$(_gen_configuration_for_backend | sed ':a;N;$!ba;s/\n/\\n/g')
+test -n "${backend_configuration_escaped}"
 
 monitor_password="$(cat ${MONITOR_PASSWORD_FILE})"
 
