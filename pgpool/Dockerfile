@@ -1,6 +1,6 @@
 FROM alpine:3.12
 
-RUN apk update && apk add --no-cache pgpool su-exec
+RUN apk update && apk add --no-cache pgpool su-exec bash
 
 RUN mkdir /var/run/pgpool /var/lib/pgpool && \
     chown root:postgres /var/run/pgpool /var/lib/pgpool && chmod 0775 /var/run/pgpool /var/lib/pgpool
@@ -14,10 +14,13 @@ ENV POOL_PASSWD_FILE="/etc/pgpool/pool_passwd" \
     USER_PASSWORDS_DIR="/secrets/users/" \
     TLS_KEY_FILE="/certs/pgpool.key" \
     TLS_CERT_FILE="/certs/pgpool.crt" \
-    BACKEND="localhost:5432,1,server0;localhost:5433,1,server1" \
-    NUM_PROCS="32"
+    NUM_PROCS="32" \
+    BACKEND_0_HOST="localhost" \
+    BACKEND_0_PORT="5432" \
+    BACKEND_0_WEIGHT="1" \
+    BACKEND_0_NAME="server1"
 
-COPY docker-entrypoint.sh generate-configuration-for-backend.awk /
+COPY docker-entrypoint.sh /
 RUN chmod 0744 /docker-entrypoint.sh
 
 STOPSIGNAL SIGINT

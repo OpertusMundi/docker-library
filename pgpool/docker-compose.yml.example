@@ -4,7 +4,7 @@ version: '3.8'
 
 services:
   'pgpool':
-    image: 'local/pgpool:${IMAGE_TAG:-4.1}'
+    image: 'local/pgpool:${IMAGE_TAG}'
     build:
       context: .
     volumes:
@@ -23,9 +23,13 @@ services:
       MONITOR_PASSWORD_FILE: /secrets/monitor-password
       # each file is considered a username; the contects are the password
       USER_PASSWORDS_DIR: /secrets/users/
-      # define backend servers as a list of (host:port,weight,name)
-      BACKEND: >-
-        postgres-n1:5432,1,server1;postgres-n2:5432,1,server2
+      # configure backend servers
+      BACKEND_0_HOST: 'postgres-n1'
+      BACKEND_0_PORT: '5432'
+      BACKEND_0_WEIGHT: '1'
+      BACKEND_1_HOST: 'postgres-n2'
+      BACKEND_1_PORT: '5432'
+      BACKEND_1_WEIGHT: '1'
     networks:
       database_network: {}
     ports:
