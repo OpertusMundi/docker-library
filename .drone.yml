@@ -1,0 +1,36 @@
+---
+kind: pipeline
+type: docker
+name: default
+
+trigger:
+  branch:
+  - spring-boot-builder
+
+steps:
+- name: prepare-tags
+  image: busybox:1.32
+  when:
+    event:
+    - push
+  environment:
+    SPRING_BOOT_VERSION: '2.3.4'
+  commands:
+  - echo -n "1-$${SPRING_BOOT_VERSION}" > .tags
+
+- name: build-and-publish
+  image: plugins/docker
+  when:
+    event:
+    - push
+  settings:
+    debug: true 
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+    context: spring-boot-builder
+    dockerfile: spring-boot-builder/Dockerfile
+    repo: opertusmundi/spring-boot-builder
+    mirror: http://registry-mirror:5000
+
