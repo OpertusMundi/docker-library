@@ -15,7 +15,7 @@ steps:
     - push
   environment:
     # version of the packaged application (PgPool)
-    APP_VERSION: '4.1'
+    APP_VERSION: '4.2'
     # base image used to package the application
     APP_BASE_IMAGE: 'alpine'
   commands:
