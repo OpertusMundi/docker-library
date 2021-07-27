@@ -1,0 +1,53 @@
+---
+kind: pipeline
+type: docker
+name: default
+
+trigger:
+  branch:
+  - jupyter-notebook-geospatial-basic
+
+steps:
+- name: prepare-tags
+  image: busybox:1.32
+  when:
+    event:
+    - push
+  environment:
+    BASE_VERSION: '2343e33dec46'
+  commands:
+  - echo -n "1,1-$${BASE_VERSION}" > .tags
+
+- name: publish-image-1
+  image: plugins/docker
+  when:
+    event:
+    - push
+  settings:
+    debug: true 
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+    context: jupyter-notebooks/geospatial-basic/
+    dockerfile: jupyter-notebooks/geospatial-basic/Dockerfile
+    repo: opertusmundi/geospatial-basic-notebook
+    mirror: http://registry-mirror:5000
+
+- name: publish-image-2
+  image: plugins/docker
+  when:
+    event:
+    - push
+  settings:
+    debug: true
+    username:
+      from_secret: registry_username
+    password:
+      from_secret: registry_password
+    context: jupyter-notebooks/geospatial-basic/
+    dockerfile: jupyter-notebooks/geospatial-basic/Dockerfile
+    repo: registry-dev-1-opertusmundi:30474/opertusmundi/geospatial-basic-notebook
+    mirror: http://registry-mirror:5000
+    registry: registry-dev-1-opertusmundi:30474
+
