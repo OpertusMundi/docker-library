@@ -14,7 +14,7 @@ steps:
     event:
     - push
   environment:
-    BASE_VERSION: '2343e33dec46'
+    BASE_VERSION: 'python-3.8.8'
   commands:
   - echo -n "1,1-$${BASE_VERSION}" > .tags
 
