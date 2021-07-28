@@ -7,4 +7,5 @@ RUN apt-get update && apt-get install -y --no-install-recommends libproj-dev pro
 
 USER $NB_USER
 
-RUN pip install --no-cache-dir geopandas==0.9.0 matplotlib==3.4.1
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
