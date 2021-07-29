@@ -33,6 +33,7 @@
         <spring-cloud.version>Hoxton.SR8</spring-cloud.version>
         <io.jsonwebtoken.version>0.11.2</io.jsonwebtoken.version>
         <feign-form.version>3.8.0</feign-form.version>
+        <icu4j.version>69.1</icu4j.version>
     </properties>
 
     <dependencyManagement>
@@ -215,6 +216,13 @@
             <artifactId>slugify</artifactId>
             <version>2.4</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.ibm.icu</groupId>
+            <artifactId>icu4j</artifactId>
+            <version>${icu4j.version}</version>
+        </dependency>
+
 
         <!-- Hibernate -->
 
