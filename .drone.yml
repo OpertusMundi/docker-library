@@ -5,18 +5,9 @@ name: default
 
 trigger:
   branch:
-  - spring-boot-builder
+  - java-commons-builder
 
 steps:
-- name: prepare-tags
-  image: busybox:1.32
-  when:
-    event:
-    - push
-  environment:
-    SPRING_BOOT_VERSION: '2.3.4'
-  commands:
-  - echo -n "1-$${SPRING_BOOT_VERSION}" > .tags
 
 - name: build-and-publish
   image: plugins/docker
@@ -29,8 +20,11 @@ steps:
       from_secret: docker_username
     password:
       from_secret: docker_password
-    context: spring-boot-builder
-    dockerfile: spring-boot-builder/Dockerfile
-    repo: opertusmundi/spring-boot-builder
+    context: java-commons-builder
+    dockerfile: java-commons-builder/Dockerfile
+    repo: opertusmundi/java-commons-builder
+    tags:
+    - '1'
+    - '1.0'
     mirror: http://registry-mirror:5000
 
