@@ -6,9 +6,9 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>eu.opertusmundi</groupId>
-	<artifactId>opertus-mundi-common</artifactId>
+	<artifactId>java-commons-builder</artifactId>
 	<version>1.0.61</version>
-	<name>[opertus-mundi] Common</name>
+	<name>opertusmundi-java-commons-builder</name>
 
 	<packaging>jar</packaging>
 
