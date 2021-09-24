@@ -7,19 +7,21 @@ trigger:
   branch:
   - rsyslog-with-logrotate
 
+environment:
+  # version of the packaged application (rsyslog)
+  APP_VERSION: '8.2012.0'
+
 steps:
-- name: prepare-tags
+
+- name: prepare-tags-1
   image: busybox:1.32
   when:
     event:
     - push
-  environment:
-    # version of the packaged application (rsyslog)
-    APP_VERSION: '8.2012.0'
   commands:
   - echo -n "1,1-$${APP_VERSION}" > .tags
 
-- name: build-and-publish
+- name: publish-1
   image: plugins/docker
   when:
     event:
@@ -31,7 +33,32 @@ steps:
     password:
       from_secret: docker_password
     context: pgpool
-    dockerfile: rsyslog-with-logrotate/Dockerfile
+    dockerfile: rsyslog-with-logrotate/rsyslog.dockerfile
     repo: opertusmundi/rsyslog-with-logrotate
     mirror: http://registry-mirror:5000
+
+- name: prepare-tags-2
+  image: busybox:1.32
+  when:
+    event:
+    - push
+  commands:
+  - echo -n "1-elasticsearch,1-$${APP_VERSION}-elasticsearch" > .tags
+
+- name: publish-2
+  image: plugins/docker
+  when:
+    event:
+    - push
+  settings:
+    debug: true 
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+    context: pgpool
+    dockerfile: rsyslog-with-logrotate/rsyslog-elasticsearch.dockerfile
+    repo: opertusmundi/rsyslog-with-logrotate
+    mirror: http://registry-mirror:5000
+
 
