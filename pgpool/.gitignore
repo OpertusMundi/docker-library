@@ -1,5 +1,6 @@
 /certs/
 /secrets/
+/data/
 
 .env
 docker-compose.yml
