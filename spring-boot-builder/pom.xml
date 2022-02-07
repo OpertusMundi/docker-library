@@ -29,7 +29,7 @@
         <commons-collections4.version>4.4</commons-collections4.version>
         <springdoc.version>1.5.4</springdoc.version>
         <git-commit-id-plugin.version>4.0.1</git-commit-id-plugin.version>
-        <postgresql.version>42.2.19</postgresql.version>
+        <postgresql.version>42.3.2</postgresql.version>
         <spring-cloud.version>Hoxton.SR8</spring-cloud.version>
         <io.jsonwebtoken.version>0.11.2</io.jsonwebtoken.version>
         <feign-form.version>3.8.0</feign-form.version>
