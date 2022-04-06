@@ -14,7 +14,7 @@ steps:
     event:
     - push
   environment:
-    SPRING_BOOT_VERSION: '2.3.4'
+    SPRING_BOOT_VERSION: '2.6.6'
   commands:
   - echo -n "1-$${SPRING_BOOT_VERSION}" > .tags
 
