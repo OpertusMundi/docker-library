@@ -25,6 +25,6 @@ steps:
     repo: opertusmundi/java-commons-builder
     tags:
     - '1'
-    - '1.0'
+    - '1.1'
     mirror: http://registry-mirror:5000
 
