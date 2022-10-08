@@ -1,6 +1,6 @@
 # vim: set syntax=dockerfile:
 
-FROM maven:3.6.3-openjdk-8
+FROM maven:3.8.6-eclipse-temurin-17-alpine
 
 WORKDIR /app
 
