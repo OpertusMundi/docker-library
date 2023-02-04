@@ -5,7 +5,7 @@ name: default
 
 trigger:
   branch:
-  - jupyter-notebook-geospatial-basic
+  - jupyter-notebook-slipo
 
 steps:
 - name: prepare-tags
@@ -29,25 +29,8 @@ steps:
       from_secret: docker_username
     password:
       from_secret: docker_password
-    context: jupyter-notebooks/geospatial-basic/
-    dockerfile: jupyter-notebooks/geospatial-basic/Dockerfile
-    repo: opertusmundi/geospatial-basic-notebook
+    context: jupyter-notebooks/slipo/
+    dockerfile: jupyter-notebooks/slipo/Dockerfile
+    repo: opertusmundi/slipo-notebook
     mirror: http://registry-mirror:5000
-
-- name: publish-image-2
-  image: plugins/docker
-  when:
-    event:
-    - push
-  settings:
-    debug: true
-    username:
-      from_secret: registry_username
-    password:
-      from_secret: registry_password
-    context: jupyter-notebooks/geospatial-basic/
-    dockerfile: jupyter-notebooks/geospatial-basic/Dockerfile
-    repo: registry-dev-1-opertusmundi:30474/opertusmundi/geospatial-basic-notebook
-    mirror: http://registry-mirror:5000
-    registry: registry-dev-1-opertusmundi:30474
 
