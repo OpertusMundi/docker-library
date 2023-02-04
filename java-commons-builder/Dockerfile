@@ -6,3 +6,4 @@ WORKDIR /app
 
 COPY pom.xml /app/
 RUN mvn -B dependency:resolve-plugins dependency:resolve
+RUN rm pom.xml

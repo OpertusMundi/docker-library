@@ -6,4 +6,4 @@ scikit-learn==0.24.1
 statsmodels==0.12.2
 folium==0.12.1
 wordcloud==1.8.1
-osmnx==0.11
+osmnx==1.1.1

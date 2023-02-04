@@ -74,14 +74,20 @@ test -n "${backend_configuration_escaped}"
 monitor_password="$(cat ${MONITOR_PASSWORD_FILE})"
 
 sed \
+    -e "s/^load_balance_mode[[:blank:]]*=[[:blank:]]*\(on\|off\)/load_balance_mode = ${LOAD_BALANCE:-on}/" \
     -e "s/\${NUM_PROCS}/${NUM_PROCS:-32}/" \
     -e "s/\${POOL_SIZE}/${POOL_SIZE:-4}/" \
+    -e "s/\${CHILD_LIFE_TIME}/${CHILD_LIFE_TIME:-5min}/" \
+    -e "s/\${CLIENT_IDLE_LIMIT}/${CLIENT_IDLE_LIMIT:-0}/" \
     -e "s~\${POOL_PASSWD_FILE}~${POOL_PASSWD_FILE}~" \
     -e "s~^ssl[[:blank:]]*=[[:blank:]]*off~ssl = on~" \
     -e "s~\${TLS_KEY_FILE}~${TLS_KEY_FILE}~" \
     -e "s~\${TLS_CERT_FILE}~${TLS_CERT_FILE}~" \
     -e "s/\${MONITOR_USER}/${MONITOR_USER}/" \
     -e "s/\${MONITOR_PASSWORD}/${monitor_password}/" \
+    -e "s/\${HEALTH_CHECK_PERIOD}/${HEALTH_CHECK_PERIOD}/" \
+    -e "s/\${HEALTH_CHECK_MAX_RETRIES}/${HEALTH_CHECK_MAX_RETRIES}/" \
+    -e "s/\${HEALTH_CHECK_RETRY_DELAY}/${HEALTH_CHECK_RETRY_DELAY}/" \
     -e "/^#[[:blank:]]\+[-][[:blank:]]\+Backend/a "'\\n'"${backend_configuration_escaped}" \
     /etc/pgpool/pgpool.conf.template > /etc/pgpool/pgpool.conf
 

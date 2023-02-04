@@ -1,0 +1,22 @@
+# vim: set syntax=yaml:
+version: '3.6'
+
+services:
+  keycloak:
+    image: opertusmundi/keycloak:1-15.0.2
+    build:
+      context: .
+    volumes: 
+      []
+    environment:
+      # see /opt/jboss/keycloak/bin/standalone.conf
+      JAVA_OPTS: >-
+        -Xms128m -Xmx1024m -XX:MetaspaceSize=96M -XX:MaxMetaspaceSize=256m -Djava.net.preferIPv4Stack=true
+        -Djboss.modules.system.pkgs=org.jboss.byteman -Djava.awt.headless=true
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: s3cret
+      #KEYCLOAK_WELCOME_THEME: topio
+      #KEYCLOAK_DEFAULT_THEME: topio
+    ports:
+    - 127.0.100.6:18080:8080
+

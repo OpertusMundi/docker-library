@@ -1,0 +1,3 @@
+[submodule "keycloak/themes"]
+	path = keycloak/themes
+	url = https://github.com/OpertusMundi/keycloak-theme.git
