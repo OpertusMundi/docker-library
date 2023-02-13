@@ -5,7 +5,7 @@ name: default
 
 trigger:
   branch:
-  - jupyter-notebook-slipo
+  - jupyter-notebook-daisy
 
 steps:
 - name: prepare-tags
@@ -29,8 +29,8 @@ steps:
       from_secret: docker_username
     password:
       from_secret: docker_password
-    context: jupyter-notebooks/slipo/
-    dockerfile: jupyter-notebooks/slipo/Dockerfile
-    repo: opertusmundi/slipo-notebook
+    context: jupyter-notebooks/daisy/
+    dockerfile: jupyter-notebooks/daisy/Dockerfile
+    repo: opertusmundi/daisy-notebook
     mirror: http://registry-mirror:5000
 
