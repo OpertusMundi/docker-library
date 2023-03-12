@@ -2,14 +2,18 @@ FROM alpine:3.15
 
 RUN apk update && apk add --no-cache pgpool su-exec bash
 
-RUN mkdir /var/run/pgpool /var/lib/pgpool && \
-    chown root:postgres /var/run/pgpool /var/lib/pgpool && chmod 0775 /var/run/pgpool /var/lib/pgpool
+RUN mkdir /var/run/pgpool /var/lib/pgpool /var/lib/postgresql && \
+    chown root:postgres /var/run/pgpool /var/lib/pgpool && chmod 0775 /var/run/pgpool /var/lib/pgpool && \
+    chown postgres:postgres /var/lib/postgresql
 COPY --chown=root:postgres pool_hba.conf pgpool.conf.template /etc/pgpool/
 
 ENV POOL_PASSWD_FILE="/etc/pgpool/pool_passwd" \
+    POOL_HBA_FILE="/etc/pgpool/pool_hba.conf" \
     PCP_SOCKET_DIR="/var/run/pgpool" \
     PGPOOL_ADMIN_USER="pgpool" \
     PGPOOL_ADMIN_PASSWORD_FILE="/secrets/pgpool-admin-password" \
+    PGPOOLKEYFILE="/secrets/pgpool-key" \
+    AUTH_METHOD="md5" \
     MONITOR_USER="monitor" \
     MONITOR_PASSWORD_FILE="/secrets/monitor-password" \
     USER_PASSWORDS_DIR="/secrets/users/" \

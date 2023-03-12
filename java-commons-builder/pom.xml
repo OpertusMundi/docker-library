@@ -7,7 +7,7 @@
 
     <groupId>eu.opertusmundi</groupId>
     <artifactId>java-commons-builder</artifactId>
-    <version>1.0.61</version>
+    <version>1.1.0</version>
     <name>opertusmundi-java-commons-builder</name>
 
     <packaging>jar</packaging>
@@ -15,24 +15,40 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.6.6</version>
+        <version>2.7.3</version>
         <relativePath />
     </parent>
 
     <properties>
-        <spring-cloud.version>2021.0.1</spring-cloud.version>
-        <com.mangopay.version>2.11.5</com.mangopay.version>
-        <commons-collections4.version>4.4</commons-collections4.version>
-        <commons-io.version>2.8.0</commons-io.version>
-        <feign-form.version>3.8.0</feign-form.version>
-        <geotools.version>24.0</geotools.version>
-        <icu4j.version>69.1</icu4j.version>
-        <io.jsonwebtoken.version>0.11.2</io.jsonwebtoken.version>
-        <org.camunda.bpm.version>7.13.0</org.camunda.bpm.version>
-        <org.locationtech.jts.version>1.18.2</org.locationtech.jts.version>
-        <org.locationtech.jts.spatial4j.version>0.8</org.locationtech.jts.spatial4j.version>
-        <springdoc.version>1.6.6</springdoc.version>
+        <java.version>17</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <postgresql.version>42.3.3</postgresql.version>
+        <spring-cloud.version>2021.0.3</spring-cloud.version>
+        <springdoc.version>1.6.11</springdoc.version>
+        <com.mangopay.version>2.25.1</com.mangopay.version>
+        <commons-io.version>2.11.0</commons-io.version>
+        <commons-collections4.version>4.4</commons-collections4.version>
+        <com.vladmihalcea.hibernate-types-55.version>2.19.2</com.vladmihalcea.hibernate-types-55.version>
+        <com.google.apis.analyticsreporting>v4-rev174-1.25.0</com.google.apis.analyticsreporting>
+        <com.sun.xml.bind.jaxb-impl>4.0.1</com.sun.xml.bind.jaxb-impl>
+        <com.sun.xml.ws.jaxws-ri>4.0.0</com.sun.xml.ws.jaxws-ri>
+        <feign-form.version>3.8.0</feign-form.version>
+        <geotools.version>27.1</geotools.version>
+        <icu4j.version>71.1</icu4j.version>
+        <io.jsonwebtoken.version>0.11.5</io.jsonwebtoken.version>
+        <javax.jws.javax.jws-api>1.1</javax.jws.javax.jws-api>
+        <org.apache.pdfbox.pdfbox>2.0.27</org.apache.pdfbox.pdfbox>
+        <org.apache.pdfbox.fontbox>2.0.27</org.apache.pdfbox.fontbox>
+        <org.apache.pdfbox.jempbox>1.8.17</org.apache.pdfbox.jempbox>
+        <org.apache.pdfbox.pdfbox-tools>2.0.27</org.apache.pdfbox.pdfbox-tools>
+        <org.apache.pdfbox.preflight>2.0.27</org.apache.pdfbox.preflight>
+        <org.apache.pdfbox.xmpbox>2.0.27</org.apache.pdfbox.xmpbox>
+        <org.camunda.bpm.version>7.17.0</org.camunda.bpm.version>
+        <org.locationtech.jts.spatial4j.version>0.8</org.locationtech.jts.spatial4j.version>
+        <passay.version>1.6.2</passay.version>
+        <slugify.version>3.0.2</slugify.version>
+        <thumbnailator.version>0.4.17</thumbnailator.version>
     </properties>
 
     <repositories>
@@ -64,7 +80,6 @@
     </dependencyManagement>
 
     <dependencies>
-
         <!-- Spring-Boot starter dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -96,15 +111,24 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web-services</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
         <!-- Spring -->
-        
         <dependency>
             <groupId>org.springframework.retry</groupId>
             <artifactId>spring-retry</artifactId>
         </dependency>
 
         <!-- Spring Cloud -->
-        
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
@@ -116,7 +140,18 @@
             </exclusions>
         </dependency>
 
-        <!-- Feign client encoders -->
+        <!-- HTTP client -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
+
+        <!-- Feign dependencies -->
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-httpclient</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>io.github.openfeign.form</groupId>
             <artifactId>feign-form</artifactId>
@@ -129,27 +164,20 @@
         </dependency>
 
         <!-- Tracing -->
-    
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-sleuth</artifactId>
         </dependency>
-    
+
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-sleuth-zipkin</artifactId>
         </dependency>
 
         <!-- Hibernate -->
-        
         <dependency>
             <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-java8</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.hibernate.validator</groupId>
-            <artifactId>hibernate-validator</artifactId>
+            <artifactId>hibernate-core</artifactId>
         </dependency>
 
         <dependency>
@@ -158,13 +186,17 @@
         </dependency>
 
         <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.vladmihalcea</groupId>
             <artifactId>hibernate-types-55</artifactId>
-            <version>2.14.1</version>
+            <version>${com.vladmihalcea.hibernate-types-55.version}</version>
         </dependency>
 
         <!-- JSON -->
-        
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-xml</artifactId>
@@ -182,7 +214,6 @@
         </dependency>
 
         <!-- JWT support -->
-        
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
@@ -204,14 +235,12 @@
         </dependency>
 
         <!-- Elastic search -->
-        
         <dependency>
             <groupId>org.elasticsearch.client</groupId>
             <artifactId>elasticsearch-rest-high-level-client</artifactId>
         </dependency>
 
         <!-- Utilities -->
-
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -244,12 +273,19 @@
         <dependency>
             <groupId>com.github.slugify</groupId>
             <artifactId>slugify</artifactId>
-            <version>2.4</version>
+            <version>${slugify.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat-jdbc</artifactId>
+            <groupId>org.passay</groupId>
+            <artifactId>passay</artifactId>
+            <version>${passay.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.coobird</groupId>
+            <artifactId>thumbnailator</artifactId>
+            <version>${thumbnailator.version}</version>
         </dependency>
 
         <!-- Utilities for spatial data & services -->
@@ -294,47 +330,80 @@
         </dependency>
 
         <!-- PDFBox -->
-
         <dependency>
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>pdfbox</artifactId>
-            <version>2.0.24</version>
+            <version>${org.apache.pdfbox.pdfbox}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>fontbox</artifactId>
-            <version>2.0.24</version>
+            <version>${org.apache.pdfbox.fontbox}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>jempbox</artifactId>
-            <version>1.8.16</version>
+            <version>${org.apache.pdfbox.jempbox}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>xmpbox</artifactId>
-            <version>2.0.0</version>
+            <version>${org.apache.pdfbox.xmpbox}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>preflight</artifactId>
-            <version>2.0.0</version>
+            <version>${org.apache.pdfbox.preflight}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>pdfbox-tools</artifactId>
-            <version>2.0.0</version>
+            <version>${org.apache.pdfbox.pdfbox-tools}</version>
+        </dependency>
+
+        <!-- Google Clients -->
+        <dependency>
+            <groupId>com.google.apis</groupId>
+            <artifactId>google-api-services-analyticsreporting</artifactId>
+            <version>${com.google.apis.analyticsreporting}</version>
+        </dependency>
+
+        <!-- JDBC drivers -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
+
+        <!-- JAXB -->
+        <dependency>
+            <groupId>com.sun.xml.ws</groupId>
+            <artifactId>jaxws-ri</artifactId>
+            <version>${com.sun.xml.ws.jaxws-ri}</version>
+            <type>pom</type>
         </dependency>
 
         <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20210307</version>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>${com.sun.xml.bind.jaxb-impl}</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.jws</groupId>
+            <artifactId>javax.jws-api</artifactId>
+            <version>${javax.jws.javax.jws-api}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
@@ -349,5 +418,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
