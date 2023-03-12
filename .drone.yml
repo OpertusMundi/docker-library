@@ -19,7 +19,7 @@ steps:
     # base image used to package the application
     APP_BASE_IMAGE: 'alpine'
   commands:
-  - echo -n "1-$${APP_VERSION},1-$${APP_VERSION}-$${APP_BASE_IMAGE}" > .tags
+  - echo -n "1.1-$${APP_VERSION},1.1-$${APP_VERSION}-$${APP_BASE_IMAGE}" > .tags
 
 - name: build-and-publish
   image: plugins/docker
