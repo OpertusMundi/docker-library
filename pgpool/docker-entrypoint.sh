@@ -34,12 +34,11 @@ function _gen_configuration_for_backend()
 function _gen_user_passwords_file()
 {
     # Generate pairs of user:password
-    
     user_passwords_dir=${USER_PASSWORDS_DIR%/}
-    while read username 
+    for f in ${user_passwords_dir}/*
     do
-        echo "${username}:$(cat ${user_passwords_dir}/${username})"; 
-    done < <(ls -1 ${user_passwords_dir})
+        echo "$(basename ${f}):$(cat ${f})"; 
+    done
 }
 
 #
