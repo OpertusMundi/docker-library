@@ -3,7 +3,8 @@ FROM alpine:3.15
 RUN apk update && apk add --no-cache pgpool su-exec bash
 
 RUN mkdir /var/run/pgpool /var/lib/pgpool /var/lib/postgresql && \
-    chown root:postgres /var/run/pgpool /var/lib/pgpool && chmod 0775 /var/run/pgpool /var/lib/pgpool && \
+    chown root:postgres /var/run/pgpool /var/lib/pgpool /etc/pgpool && \
+    chmod 0775 /var/run/pgpool /var/lib/pgpool /etc/pgpool && \
     chown postgres:postgres /var/lib/postgresql
 COPY --chown=root:postgres pool_hba.conf pgpool.conf.template /etc/pgpool/
 
