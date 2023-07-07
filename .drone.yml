@@ -5,7 +5,7 @@ name: default
 
 trigger:
   branch:
-  - pgpool
+  - 'pgpool-4.4-on-redhat'
 
 steps:
 - name: prepare-tags
@@ -15,11 +15,11 @@ steps:
     - push
   environment:
     # version of the packaged application (PgPool)
-    APP_VERSION: '4.2'
+    APP_VERSION: '4.4'
     # base image used to package the application
-    APP_BASE_IMAGE: 'alpine'
+    APP_BASE_IMAGE: 'redhat'
   commands:
-  - echo -n "1.1-$${APP_VERSION},1.1-$${APP_VERSION}-$${APP_BASE_IMAGE}" > .tags
+  - echo -n "1.1-$${APP_VERSION}-$${APP_BASE_IMAGE}" > .tags
 
 - name: build-and-publish
   image: plugins/docker
