@@ -1,15 +1,22 @@
-FROM alpine:3.18
+FROM redhat/ubi8:8.8
 
-RUN apk update && apk add --no-cache pgpool su-exec bash
+ARG POSTGRES_MAJOR_VERSION="15"
 
-RUN mkdir /var/run/pgpool /var/lib/pgpool /var/lib/postgresql && \
-    chown root:postgres /var/run/pgpool /var/lib/pgpool /etc/pgpool && \
-    chmod 0775 /var/run/pgpool /var/lib/pgpool /etc/pgpool && \
-    chown postgres:postgres /var/lib/postgresql
-COPY --chown=root:postgres pool_hba.conf pgpool.conf.template /etc/pgpool/
+RUN dnf -y update && \
+  dnf -y install https://www.pgpool.net/yum/rpms/4.4/redhat/rhel-9-x86_64/pgpool-II-release-4.4-1.noarch.rpm && \
+  dnf -y install procps pgpool-II-pg${POSTGRES_MAJOR_VERSION} && \
+  dnf clean all
 
-ENV POOL_PASSWD_FILE="/etc/pgpool/pool_passwd" \
-    POOL_HBA_FILE="/etc/pgpool/pool_hba.conf" \
+RUN gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 && \
+  curl -L -o /opt/gosu https://github.com/tianon/gosu/releases/download/1.16/gosu-amd64 && \
+  curl -L -o /opt/gosu.asc https://github.com/tianon/gosu/releases/download/1.16/gosu-amd64.asc && \
+  gpg --batch --verify /opt/gosu.asc /opt/gosu && \
+  install /opt/gosu /usr/local/bin/ -m 0700 -v
+
+COPY --chown=postgres:postgres pool_hba.conf pgpool.conf.template /etc/pgpool-II/
+
+ENV POOL_PASSWD_FILE="/etc/pgpool-II/pool_passwd" \
+    POOL_HBA_FILE="/etc/pgpool-II/pool_hba.conf" \
     PCP_SOCKET_DIR="/var/run/pgpool" \
     PGPOOL_ADMIN_USER="pgpool" \
     PGPOOL_ADMIN_PASSWORD_FILE="/secrets/pgpool-admin-password" \
@@ -35,6 +42,9 @@ ENV POOL_PASSWD_FILE="/etc/pgpool/pool_passwd" \
 
 COPY docker-entrypoint.sh /
 RUN chmod 0744 /docker-entrypoint.sh
+
+RUN mkdir /var/lib/pgpool/ /var/lib/pgsql /var/log/pgpool && \
+  chown -v postgres:postgres /var/lib/pgpool/ /var/lib/pgsql /var/log/pgpool
 
 STOPSIGNAL SIGINT
 ENTRYPOINT ["/docker-entrypoint.sh"]

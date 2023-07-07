@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+#set -x
 
 function _gen_configuration_for_backend() 
 {    
@@ -81,7 +82,7 @@ echo "hostssl all all all ${AUTH_METHOD}" >> ${POOL_HBA_FILE}
 # Generate pool_passwd from directory of user credentials
 #
 
-if [ ! -f ${POOL_PASSWD_FILE} ]; then
+if [ ! -s ${POOL_PASSWD_FILE} ]; then
     touch ${POOL_PASSWD_FILE} 
     chown root:postgres ${POOL_PASSWD_FILE} && chmod g=r,o= ${POOL_PASSWD_FILE}
     if [ -d "${USER_PASSWORDS_DIR}" ]; then
@@ -99,8 +100,8 @@ fi
 # Generate pgpool.conf
 #
 
-touch /etc/pgpool/pgpool.conf
-chmod g=r,o= /etc/pgpool/pgpool.conf && chown root:postgres /etc/pgpool/pgpool.conf
+touch /etc/pgpool-II/pgpool.conf
+chmod g=r,o= /etc/pgpool-II/pgpool.conf && chown root:postgres /etc/pgpool-II/pgpool.conf
 
 backend_configuration_escaped=$(_gen_configuration_for_backend | sed ':a;N;$!ba;s/\n/\\n/g')
 test -n "${backend_configuration_escaped}"
@@ -123,10 +124,10 @@ sed \
     -e "s/\${HEALTH_CHECK_MAX_RETRIES}/${HEALTH_CHECK_MAX_RETRIES}/" \
     -e "s/\${HEALTH_CHECK_RETRY_DELAY}/${HEALTH_CHECK_RETRY_DELAY}/" \
     -e "/^#[[:blank:]]\+[-][[:blank:]]\+Backend/a "'\\n'"${backend_configuration_escaped}" \
-    /etc/pgpool/pgpool.conf.template > /etc/pgpool/pgpool.conf
+    /etc/pgpool-II/pgpool.conf.template > /etc/pgpool-II/pgpool.conf
 
 #
 # Start
 #
 
-exec su-exec postgres $@
+exec gosu postgres $@
