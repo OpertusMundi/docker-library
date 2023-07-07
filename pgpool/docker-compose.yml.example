@@ -3,6 +3,26 @@
 version: '3.8'
 
 services:
+
+  'postgres_n1':
+    image: 'postgres:15-alpine'
+    volumes:
+    - type: volume
+      source: pgdata
+      target: /var/lib/postgresql/data
+    - type: bind
+      source: ./db-init-scripts/
+      target: /docker-entrypoint-initdb.d/
+      read_only: true
+    - type: bind
+      source: ./secrets/
+      target: /secrets/
+      read_only: true
+    environment:
+      POSTGRES_PASSWORD_FILE: /secrets/postgres-password
+      MONITOR_PASSWORD_FILE: /secrets/monitor-password
+      USER_PASSWORDS_DIR: /secrets/users
+
   'pgpool':
     image: 'local/pgpool:${IMAGE_TAG}'
     build:
@@ -18,23 +38,27 @@ services:
       read_only: true
     environment:
       NUM_PROCS: 15
+      AUTH_METHOD: scram-sha-256
       TLS_KEY_FILE: /certs/server.key
       TLS_CERT_FILE: /certs/server.crt
       MONITOR_PASSWORD_FILE: /secrets/monitor-password
       # each file is considered a username; the contects are the password
       USER_PASSWORDS_DIR: /secrets/users/
       # configure backend servers
-      BACKEND_0_HOST: 'postgres-n1'
+      BACKEND_0_HOST: 'postgres_n1'
       BACKEND_0_PORT: '5432'
       BACKEND_0_WEIGHT: '1'
-      BACKEND_1_HOST: 'postgres-n2'
-      BACKEND_1_PORT: '5432'
-      BACKEND_1_WEIGHT: '1'
-    networks:
-      database_network: {}
+      #BACKEND_1_HOST: 'postgres_n2'
+      #BACKEND_1_PORT: '5432'
+      #BACKEND_1_WEIGHT: '1'
+    #networks:
+    #  database_network: {}
     ports:
     - '30400:5433'
 
-networks:
-  database_network: {external: true}
+volumes:
+  pgdata:
+
+#networks:
+#  database_network: {external: true}
 

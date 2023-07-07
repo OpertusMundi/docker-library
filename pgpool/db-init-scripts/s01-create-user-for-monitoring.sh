@@ -1,0 +1,7 @@
+set -e
+
+psql -v ON_ERROR_STOP=1 -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" <<-EOD
+CREATE USER monitor WITH LOGIN IN ROLE pg_monitor;
+ALTER ROLE monitor PASSWORD '$(cat ${MONITOR_PASSWORD_FILE})';
+EOD
+
