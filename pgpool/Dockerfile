@@ -3,7 +3,7 @@ FROM redhat/ubi8:8.8
 ARG POSTGRES_MAJOR_VERSION="15"
 
 RUN dnf -y update && \
-  dnf -y install https://www.pgpool.net/yum/rpms/4.4/redhat/rhel-9-x86_64/pgpool-II-release-4.4-1.noarch.rpm && \
+  dnf -y install https://www.pgpool.net/yum/rpms/4.4/redhat/rhel-8-x86_64/pgpool-II-release-4.4-1.noarch.rpm && \
   dnf -y install procps pgpool-II-pg${POSTGRES_MAJOR_VERSION} && \
   dnf clean all
 
