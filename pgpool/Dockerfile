@@ -1,3 +1,11 @@
+FROM redhat/ubi8:8.8 AS su-exec-builder
+
+RUN dnf -y install git-core gcc make && dnf clean all
+
+RUN git clone -b master https://github.com/ncopa/su-exec.git /opt/su-exec && \
+  make -C /opt/su-exec
+
+
 FROM redhat/ubi8:8.8
 
 ARG POSTGRES_MAJOR_VERSION="15"
@@ -7,17 +15,14 @@ RUN dnf -y update && \
   dnf -y install procps pgpool-II-pg${POSTGRES_MAJOR_VERSION} && \
   dnf clean all
 
-RUN gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 && \
-  curl -L -o /opt/gosu https://github.com/tianon/gosu/releases/download/1.16/gosu-amd64 && \
-  curl -L -o /opt/gosu.asc https://github.com/tianon/gosu/releases/download/1.16/gosu-amd64.asc && \
-  gpg --batch --verify /opt/gosu.asc /opt/gosu && \
-  install /opt/gosu /usr/local/bin/ -m 0700 -v
+COPY --from=su-exec-builder /opt/su-exec/su-exec /usr/local/bin
 
 COPY --chown=postgres:postgres pool_hba.conf pgpool.conf.template /etc/pgpool-II/
 
 ENV POOL_PASSWD_FILE="/etc/pgpool-II/pool_passwd" \
     POOL_HBA_FILE="/etc/pgpool-II/pool_hba.conf" \
     PCP_SOCKET_DIR="/var/run/pgpool" \
+    PGPOOL_CONFIG_DIR="/etc/pgpool-II" \
     PGPOOL_ADMIN_USER="pgpool" \
     PGPOOL_ADMIN_PASSWORD_FILE="/secrets/pgpool-admin-password" \
     PGPOOLKEYFILE="/secrets/pgpool-key" \
@@ -49,4 +54,3 @@ RUN mkdir /var/lib/pgpool/ /var/lib/pgsql /var/log/pgpool && \
 STOPSIGNAL SIGINT
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["pgpool", "-n", "-D", "-F", "/var/lib/pgpool/pcp.conf"]
-

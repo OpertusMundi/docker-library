@@ -46,6 +46,8 @@ function _gen_user_passwords_file()
 # Check environment
 #
 
+test -d "${PGPOOL_CONFIG_DIR}"
+
 if [ ! -f "${PGPOOL_ADMIN_PASSWORD_FILE}" ]; then
     echo "The file with the admin password for PgPool (PGPOOL_ADMIN_PASSWORD_FILE) is missing!" 1>&2
     exit 1
@@ -83,6 +85,7 @@ echo "hostssl all all all ${AUTH_METHOD}" >> ${POOL_HBA_FILE}
 #
 
 if [ ! -s ${POOL_PASSWD_FILE} ]; then
+    echo "Generating pool_passwd file at ${POOL_PASSWD_FILE}" 1>&2
     touch ${POOL_PASSWD_FILE} 
     chown root:postgres ${POOL_PASSWD_FILE} && chmod g=r,o= ${POOL_PASSWD_FILE}
     if [ -d "${USER_PASSWORDS_DIR}" ]; then
@@ -100,8 +103,8 @@ fi
 # Generate pgpool.conf
 #
 
-touch /etc/pgpool-II/pgpool.conf
-chmod g=r,o= /etc/pgpool-II/pgpool.conf && chown root:postgres /etc/pgpool-II/pgpool.conf
+touch ${PGPOOL_CONFIG_DIR}/pgpool.conf
+chmod g=r,o= ${PGPOOL_CONFIG_DIR}/pgpool.conf && chown root:postgres ${PGPOOL_CONFIG_DIR}/pgpool.conf
 
 backend_configuration_escaped=$(_gen_configuration_for_backend | sed ':a;N;$!ba;s/\n/\\n/g')
 test -n "${backend_configuration_escaped}"
@@ -124,10 +127,10 @@ sed \
     -e "s/\${HEALTH_CHECK_MAX_RETRIES}/${HEALTH_CHECK_MAX_RETRIES}/" \
     -e "s/\${HEALTH_CHECK_RETRY_DELAY}/${HEALTH_CHECK_RETRY_DELAY}/" \
     -e "/^#[[:blank:]]\+[-][[:blank:]]\+Backend/a "'\\n'"${backend_configuration_escaped}" \
-    /etc/pgpool-II/pgpool.conf.template > /etc/pgpool-II/pgpool.conf
+    ${PGPOOL_CONFIG_DIR}/pgpool.conf.template > ${PGPOOL_CONFIG_DIR}/pgpool.conf
 
 #
 # Start
 #
 
-exec gosu postgres $@
+exec su-exec postgres $@
